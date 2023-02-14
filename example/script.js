@@ -1,3 +1,5 @@
+import FontPicker from "../lib/fontpicker.esm.js";
+
 // initialize the font picker
 FontPicker.initialize({
     localFonts: false,

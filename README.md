@@ -1,6 +1,16 @@
 # Bootstrap 5 Google Fonts Picker
 A Google fonts picker input element, powered by Bootstrap. The picker uses 99.9% Bootstrap, and thus, should work with almost all Bootstrap themes.
 
+## Installation
+Either import the `fontpicker.esm.js` file:
+```js
+import FontPicker from "./lib/fontpicker.esm.js";
+```
+Or include `fontpicker.js` in your head:
+```html
+<script src="./lib/fontpicker.js"></script>
+```
+
 ## Usage
 ```js
 // initialize the font picker
