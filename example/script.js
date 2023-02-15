@@ -3,7 +3,7 @@ import FontPicker from "../lib/fontpicker.js";
 // initialize the font picker
 FontPicker.initialize({
     localFonts: false,
-    language: "nl",
+    language: "en",
 });
 
 const input = document.getElementById("font");

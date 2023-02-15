@@ -1,6 +1,18 @@
 # Bootstrap 5 Google Fonts Picker
 A Google fonts picker input element, powered by Bootstrap. The picker uses 99.9% Bootstrap, and thus, should work with almost all Bootstrap themes.
 
+## Features
+ - dynamically loads fonts
+ - stores favourites and recents
+ - support for custom (local) fonts
+ - search, category and language filters
+ - translations for `en, nl, de, es, fr`
+ - no JQuery, pure ES6
+
+## Screenshots
+![](img/input.png)
+![](img/modal.png)
+
 ## Usage
 First, the font picker **must** be initialized.
 ```js
@@ -8,7 +20,7 @@ import FontPicker from "./fontpicker.min.js";
 
 FontPicker.initialize({
     localFonts: false,
-    language: "nl",
+    language: "en",
 });
 ```
 
