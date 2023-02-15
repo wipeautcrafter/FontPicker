@@ -1,4 +1,32 @@
-import * as google from "./google-fonts.js";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: fontpicker.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: fontpicker.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import * as google from "./google-fonts.js";
 import translations from "./translations.js";
 
 let initialized = false;
@@ -46,7 +74,7 @@ const onHeartClick = function(e) {
     storeData();
     sortFonts();
 
-    favourite && this.parentElement.scrollIntoView({ block: "center" });
+    favourite &amp;&amp; this.parentElement.scrollIntoView({ block: "center" });
 };
 
 // create a heart button
@@ -54,7 +82,7 @@ const createHeart = () => {
     const button = document.createElement("span");
     button.className = "float-end fp__heart";
     button.setAttribute("role", "button");
-    button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" viewBox="0 0 18 18"><path d="M9 2.314 C13.438-2.248 24.534 5.735 9 16-6.534 5.736 4.562-2.248 9 2.314z" /></svg>`;
+    button.innerHTML = `&lt;svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" viewBox="0 0 18 18">&lt;path d="M9 2.314 C13.438-2.248 24.534 5.735 9 16-6.534 5.736 4.562-2.248 9 2.314z" />&lt;/svg>`;
     button.addEventListener("click", onHeartClick);
     return button;
 };
@@ -139,7 +167,7 @@ const onLangChange = (e) => {
 
     fonts.forEach((font) => {
         const fontLang = font.dataset.subsets.split(",");
-        const hide = !fontLang.includes(lang) && lang !== "all";
+        const hide = !fontLang.includes(lang) &amp;&amp; lang !== "all";
         font.classList.toggle("hide-l", hide);
     });
 };
@@ -157,8 +185,8 @@ const onFontDblClick = function(e) {
 // create the modal
 const createModal = () => {
     // insert the modal HTML and a small stylesheet into the document
-    document.head.insertAdjacentHTML("beforeend", `<style>.hide-s, .hide-c, .hide-l { display: none; } #fp__preview { white-space: nowrap; text-overflow: ellipsis; overflow: hidden; } .fp__font-item { color: var(--bs-dark); } .fp__font-item:hover { background: var(--bs-gray-300); } .fp__font-item.fp__selected { color: var(--bs-light); background: var(--bs-primary); } .fp__heart>svg { fill: none; stroke: var(--bs-light); height: 1em; } .fp__heart:hover>svg { fill: var(--bs-light); } .fp__heart.fp__fav>svg { stroke: var(--bs-danger); fill: var(--bs-danger); }</style>`);
-    document.body.insertAdjacentHTML("beforeend", `<div class="modal fade" id="fp__modal" tabindex="-1"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="fp__title"></h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="row g-2 py-2 px-3 border border-bottom"><div class="col-sm-6"><input class="form-control" id="fp__search"></div><div class="col-sm-6"> <select class="form-select" id="fp__languages"></select></div><div class="col-12 d-flex flex-wrap gap-2 justify-content-center" id="fp__categories"></div><div class="col-12 text-center fs-5" id="fp__preview" contenteditable spellcheck="false"></div></div><div class="modal-body pt-2" id="fp__fonts"></div><div class="modal-footer"><button type="button" class="btn btn-secondary" id="fp__cancel"></button><button type="button" class="btn btn-primary" id="fp__pick"></button></div></div></div></div>`);
+    document.head.insertAdjacentHTML("beforeend", `&lt;style>.hide-s, .hide-c, .hide-l { display: none; } #fp__preview { white-space: nowrap; text-overflow: ellipsis; overflow: hidden; } .fp__font-item { color: var(--bs-dark); } .fp__font-item:hover { background: var(--bs-gray-300); } .fp__font-item.fp__selected { color: var(--bs-light); background: var(--bs-primary); } .fp__heart>svg { fill: none; stroke: var(--bs-light); height: 1em; } .fp__heart:hover>svg { fill: var(--bs-light); } .fp__heart.fp__fav>svg { stroke: var(--bs-danger); fill: var(--bs-danger); }&lt;/style>`);
+    document.body.insertAdjacentHTML("beforeend", `&lt;div class="modal fade" id="fp__modal" tabindex="-1">&lt;div class="modal-dialog modal-dialog-scrollable">&lt;div class="modal-content">&lt;div class="modal-header">&lt;h5 class="modal-title" id="fp__title">&lt;/h5>&lt;button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&lt;/button>&lt;/div>&lt;div class="row g-2 py-2 px-3 border border-bottom">&lt;div class="col-sm-6">&lt;input class="form-control" id="fp__search">&lt;/div>&lt;div class="col-sm-6"> &lt;select class="form-select" id="fp__languages">&lt;/select>&lt;/div>&lt;div class="col-12 d-flex flex-wrap gap-2 justify-content-center" id="fp__categories">&lt;/div>&lt;div class="col-12 text-center fs-5" id="fp__preview" contenteditable spellcheck="false">&lt;/div>&lt;/div>&lt;div class="modal-body pt-2" id="fp__fonts">&lt;/div>&lt;div class="modal-footer">&lt;button type="button" class="btn btn-secondary" id="fp__cancel">&lt;/button>&lt;button type="button" class="btn btn-primary" id="fp__pick">&lt;/button>&lt;/div>&lt;/div>&lt;/div>&lt;/div>`);
 
     // keep references to often used elements
     const fpModal = document.getElementById("fp__modal");
@@ -281,7 +309,7 @@ const loadFont = (name) => {
     const googleFont = options.googleFonts[name];
     if (googleFont) {
         // Load Google font
-        const family = `${encodeURIComponent(name)}:${googleFont.variants}&display=swap`;
+        const family = `${encodeURIComponent(name)}:${googleFont.variants}&amp;display=swap`;
         const url = "https://fonts.googleapis.com/css?family=" + family;
         const link = document.createElement("link");
         link.href = url;
@@ -369,3 +397,26 @@ const FontPicker = {
 };
 
 export default FontPicker;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="FontPicker.html">FontPicker</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Wed Feb 15 2023 10:29:58 GMT+0100 (Central European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

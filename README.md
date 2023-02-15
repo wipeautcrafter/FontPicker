@@ -1,45 +1,41 @@
 # Bootstrap 5 Google Fonts Picker
 A Google fonts picker input element, powered by Bootstrap. The picker uses 99.9% Bootstrap, and thus, should work with almost all Bootstrap themes.
 
-## Installation
-Either import the `fontpicker.esm.js` file:
-```js
-import FontPicker from "./lib/fontpicker.esm.js";
-```
-Or include `fontpicker.js` in your head:
-```html
-<script src="./lib/fontpicker.js"></script>
-```
-
 ## Usage
+First, the font picker **must** be initialized.
 ```js
-// initialize the font picker
+import FontPicker from "./fontpicker.min.js";
+
 FontPicker.initialize({
     localFonts: false,
     language: "nl",
 });
+```
 
+Then, font picker inputs can be created. This can be done by attaching to an existing input element, or creating a new one:
+```js
+// atach to an existing one
 const input = document.getElementById("font");
-const fontPicker = FontPicker.create(input);
+const picker1 = FontPicker.attach(input);
+// create a new one
+const picker2 = FontPicker.create();
+```
 
-// add example event listener
+These inputs can be opened and set programatically:
+```js
+picker.open();
+picker.set("Open Sans");
+```
+
+A font picker input can also be listened to for the **input** event:
+```js
 fontPicker.addEventListener("input", (e) => {
     console.log(e.target.value);
 });
-
-// open font picker
-fontPicker.open();
 ```
-
-## Options
-* {string} language - font picker language
-* {boolean} variants - use font variants?
-* {number} recents - number of recent fonts to show
-* {string} localFontsUrl - url to local fonts
-* {string} localFontsType - local font type extension
-* {Object?} localFonts - local fonts object
-* {Object?} googleFonts - google fonts object
-* {string} defaultFont - default font
 
 ## Dependencies
 The picker requires both a Bootstrap 5 CSS and JS file in order to work properly.
+
+## Documentation
+All documentation can be found in the `docs/` folder.

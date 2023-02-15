@@ -1,4 +1,4 @@
-import FontPicker from "../lib/fontpicker.esm.js";
+import FontPicker from "../lib/fontpicker.js";
 
 // initialize the font picker
 FontPicker.initialize({
@@ -7,7 +7,7 @@ FontPicker.initialize({
 });
 
 const input = document.getElementById("font");
-const fontPicker = FontPicker.create(input);
+const fontPicker = FontPicker.attach(input);
 
 // add example event listener
 fontPicker.addEventListener("input", (e) => {
