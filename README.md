@@ -10,8 +10,8 @@ A Google fonts picker input element, powered by Bootstrap. The picker uses 99.9%
  - no JQuery, pure ES6
 
 ## Screenshots
-![](img/input.png)
-![](img/modal.png)
+<img src="img/input.png" width="200">
+<img src="img/modal.png" width="300">
 
 ## Usage
 First, the font picker **must** be initialized.
