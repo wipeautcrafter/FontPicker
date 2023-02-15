@@ -14,6 +14,7 @@ A Google fonts picker input element, powered by Bootstrap. The picker uses 99.9%
 <img src="img/modal.png" width="300">
 
 ## Usage
+### Initialization
 First, the font picker **must** be initialized.
 ```js
 import FontPicker from "./fontpicker.min.js";
@@ -24,6 +25,7 @@ FontPicker.initialize({
 });
 ```
 
+### Creation
 Then, font picker inputs can be created. This can be done by attaching to an existing input element, or creating a new one:
 ```js
 // atach to an existing one
@@ -33,12 +35,14 @@ const picker1 = FontPicker.attach(input);
 const picker2 = FontPicker.create();
 ```
 
+### Methods
 These inputs can be opened and set programatically:
 ```js
 picker.open();
 picker.set("Open Sans");
 ```
 
+### Events
 A font picker input can also be listened to for the **input** event:
 ```js
 fontPicker.addEventListener("input", (e) => {
@@ -46,8 +50,20 @@ fontPicker.addEventListener("input", (e) => {
 });
 ```
 
-## Dependencies
-The picker requires both a Bootstrap 5 CSS and JS file in order to work properly.
+### Font Loading
+If you want to ensure a font is loaded (e.g. for canvas text):
+```js
+import FontPicker from "./fontpicker.min.js";
+
+await FontPicker.loadFont("Open Sans");
+console.log("Font loaded!");
+```
+
+## Examples
+Examples can be found in the `example/` folder.
 
 ## Documentation
 All documentation can be found in the `docs/` folder.
+
+## Dependencies
+The picker requires both a Bootstrap 5 CSS and JS file in order to work properly.

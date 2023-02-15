@@ -1,4 +1,4 @@
-import FontPicker from "../lib/fontpicker.js";
+import FontPicker from "../../lib/fontpicker.js";
 
 // initialize the font picker
 FontPicker.initialize({
@@ -9,10 +9,10 @@ FontPicker.initialize({
 const input = document.getElementById("font");
 const fontPicker = FontPicker.attach(input);
 
-// add example event listener
-fontPicker.addEventListener("input", (e) => {
-    console.log(e.target.value);
-});
-
-// open font picker
+fontPicker.set("Roboto");
 fontPicker.open();
+
+// add event listener
+fontPicker.addEventListener("input", (e) => {
+    alert(e.target.value);
+});
