@@ -35,13 +35,17 @@ const loadedFonts = {};
 // default options
 const options = {
     language: "en",
-    variants: true, // currently not used
+    variants: true,
     recents: 3,
     localFontsUrl: "/fonts/",
     localFontsType: "woff",
     localFonts: {},
     googleFonts: google.fonts,
-    defaultFont: "Open Sans",
+    default: {
+        family: "Roboto",
+        weight: "400",
+        style: "normal",
+    },
 };
 
 let modal;
@@ -51,6 +55,27 @@ let selectedFont;
 // data storage for favorites and recents
 let data = JSON.parse(localStorage.getItem("font_picker_data")) ?? { fav: [], rec: [] };
 const storeData = () => localStorage.setItem("font_picker_data", JSON.stringify(data));
+
+// font variant parsing
+const toFontString = (f) => {
+    const variant = f.style === "italic" ? `${f.weight}i` : f.weight;
+    return options.variants ? `${f.family}:${variant}` : f.family;
+};
+
+const fromFontString = (s) => {
+    const parsed = {family: null, weight: "400", style: "normal"};
+    if(typeof s === "string") {
+        const [family, variant] = s.split(":");
+        if(family) parsed.family = family;
+        if(variant) {
+            parsed.weight = variant.replace("i", "");
+            parsed.style = variant.includes("i") ? "italic" : "normal";
+        }
+    } else {
+        Object.assign(parsed, s);
+    }
+    return parsed;
+};
 
 // make favourites and recents the first items in the picker
 const sortFonts = () => {
@@ -87,7 +112,42 @@ const createHeart = () => {
     return button;
 };
 
+const updatePreview = () => {
+    const preview = document.getElementById("fp__preview");
+    preview.style.fontFamily = selectedFont.dataset.family;
+    preview.style.fontWeight = selectedFont.dataset.weight;
+    preview.style.fontStyle = selectedFont.dataset.style;
+};
+
 // select a font item from the picker
+const onVariantClick = (e) => {
+    const fpVariants = document.getElementById("fp__variants");
+
+    if(e.target.innerText === "Italic") {
+        // toggle italic
+        const active = e.target.classList.toggle("btn-info");
+        e.target.classList.toggle("btn-secondary", !active);
+    } else {
+        // unselect the current variant
+        const current = fpVariants.querySelector(".btn-primary");
+        current.classList.remove("btn-primary");
+        current.classList.add("btn-secondary");
+
+        // select the new variant
+        e.target.classList.add("btn-primary");
+        e.target.classList.remove("btn-secondary");
+    }
+
+    // update the selected font
+    const variant = fpVariants.querySelector(".btn-primary").innerText;
+    const isItalic = fpVariants.querySelector(".btn-info");
+
+    selectedFont.dataset.weight = variant;
+    selectedFont.dataset.style = isItalic ? "italic" : "normal";
+
+    updatePreview();
+};
+
 const selectFont = (font) => {
     if(selectedFont) {
         if(selectedFont === font) return; // already selected
@@ -104,7 +164,32 @@ const selectFont = (font) => {
         font.appendChild(createHeart());
     }
 
+    // make variants visible
+    const fpVariants = document.getElementById("fp__variants");
+    fpVariants.classList.toggle("d-none", !options.variants);
+    fpVariants.innerHTML = "";
+
+    const filtered = font.dataset.variants.split(",").filter((v) => !v.endsWith("i"));
+    let variants = [ "Italic", ...filtered ];
+
+    if(options.variants) {
+        for(const variant of variants) {
+            const badge = document.createElement("button");
+            badge.className = "badge rounded-pill btn";
+            badge.innerText = variant;
+
+            if(font.dataset.weight === variant) badge.classList.add("btn-primary");
+            else if(variant === "Italic" &amp;&amp; font.dataset.style === "italic") badge.classList.add("btn-info");
+            else badge.classList.add("btn-secondary");
+
+            fpVariants.appendChild(badge);
+            badge.addEventListener("click", onVariantClick);
+        }
+    }
+
+    font.scrollIntoView({ block: "center" });
     selectedFont = font;
+    updatePreview();
 };
 
 // open a font picker from its input
@@ -112,25 +197,30 @@ const openPicker = (input) => {
     if(!modal) createModal();
     openedPicker = input;
 
-    // set the input value as the selected font
-    const family = input.value || options.defaultFont;
-    selectFont(document.querySelector(`#fp__fonts > [data-family="${family}"]`));
+    const { family, weight, style } = fromFontString(input.value);
+    const item = document.querySelector(`#fp__fonts > [data-family="${family}"]`);
+    item.dataset.weight = weight;
+    item.dataset.style = style;
+    selectFont(item);
 
     sortFonts();
     modal.show();
 };
 
 // set the value of the input element
-const setPicker = (input, value, fire = false) => {
-    loadFont(value);
+const setPicker = (input, _font, fire = false) => {
+    const font = fromFontString(_font);
+    loadFont(font.family);
 
-    input.value = value;
-    input.style.fontFamily = value;
+    input.value = toFontString(font);
+    input.style.fontFamily = font.family;
+    input.style.fontWeight = font.weight;
+    input.style.fontStyle = font.style;
 
     // add to recents
-    data.rec = data.rec.filter((f) => f !== value);
+    data.rec = data.rec.filter((f) => f !== font.family);
     while(data.rec.length >= options.recents) data.rec.shift();
-    data.rec.push(value);
+    data.rec.push(font.family);
     storeData();
 
     fire &amp;&amp; input.dispatchEvent(new Event("input"));
@@ -178,15 +268,50 @@ const onFontClick = function(e) {
 };
 
 const onFontDblClick = function(e) {
-    setPicker(openedPicker, this.dataset.family, true);
+    setPicker(openedPicker, {
+        family: this.dataset.family,
+        weight: this.dataset.weight,
+        style: this.dataset.style,
+    }, true);
     modal.hide();
+};
+
+const selectNext = (offset) => {
+    const children = Array.from(selectedFont.parentElement.children);
+    const siblings = children.filter(s => {
+        return !s.classList.contains("hide-s") &amp;&amp; !s.classList.contains("hide-c") &amp;&amp; !s.classList.contains("hide-l");
+    });
+
+    const index = siblings.indexOf(selectedFont);
+    const next = siblings[index + offset];
+    if(next) selectFont(next);
+};
+
+const onKeyPress = (e) => {
+    if(!modal?._isShown) return;
+
+    if(e.key === "Enter") {
+        onFontDblClick.call(selectedFont);
+        e.preventDefault();
+    } else if(e.key === "Escape") {
+        modal.hide();
+        e.preventDefault();
+    } else if(e.key === "ArrowUp") {
+        selectNext(-1);
+        e.preventDefault();
+    } else if(e.key === "ArrowDown") {
+        selectNext(1);
+        e.preventDefault();
+    } else if(/^[a-z0-9]$/i.test(e.key)) {
+        document.getElementById("fp__search").focus();
+    }
 };
 
 // create the modal
 const createModal = () => {
     // insert the modal HTML and a small stylesheet into the document
-    document.head.insertAdjacentHTML("beforeend", `&lt;style>.hide-s, .hide-c, .hide-l { display: none; } #fp__preview { white-space: nowrap; text-overflow: ellipsis; overflow: hidden; } .fp__font-item { color: var(--bs-dark); } .fp__font-item:hover { background: var(--bs-gray-300); } .fp__font-item.fp__selected { color: var(--bs-light); background: var(--bs-primary); } .fp__heart>svg { fill: none; stroke: var(--bs-light); height: 1em; } .fp__heart:hover>svg { fill: var(--bs-light); } .fp__heart.fp__fav>svg { stroke: var(--bs-danger); fill: var(--bs-danger); }&lt;/style>`);
-    document.body.insertAdjacentHTML("beforeend", `&lt;div class="modal fade" id="fp__modal" tabindex="-1">&lt;div class="modal-dialog modal-dialog-scrollable">&lt;div class="modal-content">&lt;div class="modal-header">&lt;h5 class="modal-title" id="fp__title">&lt;/h5>&lt;button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&lt;/button>&lt;/div>&lt;div class="row g-2 py-2 px-3 border border-bottom">&lt;div class="col-sm-6">&lt;input class="form-control" id="fp__search">&lt;/div>&lt;div class="col-sm-6"> &lt;select class="form-select" id="fp__languages">&lt;/select>&lt;/div>&lt;div class="col-12 d-flex flex-wrap gap-2 justify-content-center" id="fp__categories">&lt;/div>&lt;div class="col-12 text-center fs-5" id="fp__preview" contenteditable spellcheck="false">&lt;/div>&lt;/div>&lt;div class="modal-body pt-2" id="fp__fonts">&lt;/div>&lt;div class="modal-footer">&lt;button type="button" class="btn btn-secondary" id="fp__cancel">&lt;/button>&lt;button type="button" class="btn btn-primary" id="fp__pick">&lt;/button>&lt;/div>&lt;/div>&lt;/div>&lt;/div>`);
+    document.head.insertAdjacentHTML("beforeend", `&lt;style>.hide-s, .hide-c, .hide-l { display: none; } #fp__preview { white-space: nowrap; text-overflow: ellipsis; overflow: hidden; } .fp__font-item { color: var(--bs-dark); } .fp__font-item:hover { background: var(--bs-gray-300); } .fp__font-item.fp__selected { color: var(--bs-light); background: var(--bs-primary); } .fp__heart>svg { fill: none; stroke: var(--bs-light); height: 1em; } .fp__heart:hover>svg { fill: var(--bs-light); } .fp__heart.fp__fav>svg { stroke: var(--bs-danger); fill: var(--bs-danger); } .fp__selected>.fp__heart.fp__fav>svg { stroke: var(--bs-light); fill: var(--bs-light); }&lt;/style>`);
+    document.body.insertAdjacentHTML("beforeend", `&lt;div class="modal fade" id="fp__modal" tabindex="-1">&lt;div class="modal-dialog modal-dialog-scrollable">&lt;div class="modal-content">&lt;div class="modal-header">&lt;h5 class="modal-title" id="fp__title">&lt;/h5>&lt;button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&lt;/button>&lt;/div>&lt;div class="row g-2 py-2 px-3 border border-bottom">&lt;div class="col-sm-6">&lt;input class="form-control" id="fp__search">&lt;/div>&lt;div class="col-sm-6"> &lt;select class="form-select" id="fp__languages">&lt;/select>&lt;/div>&lt;div class="col-12 d-flex flex-wrap gap-2 justify-content-center" id="fp__categories">&lt;/div>&lt;div class="col-12 text-center fs-5" id="fp__preview" contenteditable spellcheck="false">&lt;/div>&lt;/div>&lt;div class="modal-body pt-2" id="fp__fonts">&lt;/div>&lt;div class="py-2 px-3 border-top border-bottom d-flex flex-wrap gap-2 justify-content-center" id="fp__variants">&lt;/div>&lt;div class="modal-footer">&lt;button type="button" class="btn btn-secondary" id="fp__cancel">&lt;/button>&lt;button type="button" class="btn btn-primary" id="fp__pick">&lt;/button>&lt;/div>&lt;/div>&lt;/div>&lt;/div>`);
 
     // keep references to often used elements
     const fpModal = document.getElementById("fp__modal");
@@ -260,6 +385,9 @@ const createModal = () => {
         fpFonts.appendChild(fontItem);
 
         fontItem.dataset.family = family;
+        fontItem.dataset.variants = font.variants;
+        fontItem.dataset.weight = "400";
+        fontItem.dataset.style = "normal";
         fontItem.dataset.category = font.category;
         fontItem.dataset.subsets = font.subsets ?? "";
 
@@ -278,7 +406,11 @@ const createModal = () => {
     // make the pick button clickable
     fpPick.innerText = translations[options.language].select;
     fpPick.addEventListener("click", () => {
-        setPicker(openedPicker, selectedFont.dataset.family, true);
+        setPicker(openedPicker, {
+            family: selectedFont.dataset.family,
+            weight: selectedFont.dataset.weight,
+            style: selectedFont.dataset.style,
+        }, true);
         modal.hide();
     });
 
@@ -363,6 +495,8 @@ const initialize = (_options) => {
     }
 
     Object.assign(options, _options);
+    window.addEventListener("keydown", onKeyPress);
+
     initialized = true;
 };
 
@@ -375,7 +509,6 @@ const initialize = (_options) => {
 
 const create = () => {
     const input = document.createElement("input");
-    input.type = "text";
     return attach(input);
 };
 
@@ -392,13 +525,24 @@ const attach = (input) => {
         throw new TypeError("Font picker has not been initialized yet.");
     }
 
+    input.type = "text";
     input.classList.add("form-select");
     input.setAttribute("readonly", "readonly");
     input.setAttribute("role", "button");
 
     input.open = () => openPicker(input);
-    input.set = (font, fire) => setPicker(input, font, fire);
+    input.setFont = (font, fire) => setPicker(input, font, fire);
+    input.getFont = () => fromFontString(input.value);
+
     input.addEventListener("click", input.open);
+    input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            input.open();
+            e.preventDefault();
+        }
+    });
+
+    setPicker(input, input.value || options.default, false);
 
     return input;
 };
@@ -430,7 +574,7 @@ export default FontPicker;
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Wed Feb 15 2023 11:33:40 GMT+0100 (Central European Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Mon Feb 27 2023 12:05:09 GMT+0100 (Central European Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>
