@@ -39,7 +39,22 @@ const picker2 = FontPicker.create();
 These inputs can be opened and set programatically:
 ```js
 picker.open();
-picker.set("Open Sans");
+picker.setFont("Open Sans"); // set font family only
+picker.setFont("Open Sans:800i"); // set font family, weight and style
+picker.setFont({ // set from object
+    family: "Open Sans",
+    weight: "800",
+    style: "italic",
+});
+```
+
+The current font can also be retrieved as an object:
+```js
+picker.getFont() -> {
+    family: "Example Font",
+    weight: "800",
+    style: "regular",
+}
 ```
 
 ### Events
@@ -47,6 +62,7 @@ A font picker input can also be listened to for the **input** event:
 ```js
 fontPicker.addEventListener("input", (e) => {
     console.log(e.target.value);
+    console.log(e.target.getFont());
 });
 ```
 

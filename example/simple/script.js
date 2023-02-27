@@ -9,7 +9,7 @@ FontPicker.initialize({
 const input = document.getElementById("font");
 const fontPicker = FontPicker.attach(input);
 
-fontPicker.set("Roboto");
+fontPicker.set("Roboto", "400");
 fontPicker.open();
 
 // add event listener
