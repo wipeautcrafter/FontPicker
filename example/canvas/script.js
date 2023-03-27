@@ -26,6 +26,7 @@ const drawToCanvas = async (text, size, font) => {
 FontPicker.initialize({
     localFonts: false,
     language: "en",
+    variants: false,
 });
 
 const input = document.getElementById("font");

@@ -14,5 +14,6 @@ fontPicker.open();
 
 // add event listener
 fontPicker.addEventListener("input", (e) => {
-    alert(e.target.getFont());
+    const {family, weight, style} = e.target.getFont();
+    alert(`${family}, ${weight}, ${style}`);
 });
