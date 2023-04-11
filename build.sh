@@ -26,9 +26,9 @@ echo "[2/2] Building minified library:"
 echo ""
 
 rm -rf dist/*
-esbuild lib/fontpicker.js --bundle --minify --format=esm --outfile=dist/fontpicker.min.js
+copy="/* Copyright $(date +'%Y') EvoStack. All rights reserved. */"
 
-year=`date +'%Y'`
-echo "/* Copyright $year EvoStack. All rights reserved. */" > dist/fontpicker2.min.js
-cat dist/fontpicker.min.js >> dist/fontpicker2.min.js
-mv dist/fontpicker2.min.js dist/fontpicker.min.js
+esbuild lib/fontpicker.js --bundle --format=esm --outfile=dist/fontpicker.js
+esbuild lib/fontpicker.js --bundle --minify --format=esm --outfile=dist/fontpicker.min.js
+echo "$copy" | cat - dist/fontpicker.js > temp && mv temp dist/fontpicker.js
+echo "$copy" | cat - dist/fontpicker.min.js > temp && mv temp dist/fontpicker.min.js
