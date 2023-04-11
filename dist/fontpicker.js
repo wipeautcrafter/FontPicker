@@ -5,7 +5,7 @@ var languages = {
   "arabic": "Arabic",
   "bengali": "Bengali",
   "chinese-hongkong": "Chinese (Hong Kong)",
-  "chinese-simplified": "Chinese (Simplified",
+  "chinese-simplified": "Chinese (Simplified)",
   "chinese-traditional": "Chinese (Traditional)",
   "cyrillic": "Cyrillic",
   "cyrillic-ext": "Cyrillic Extended",
@@ -7110,7 +7110,7 @@ var selectNextStyle = (offset) => {
 };
 var onKeyPress = (e) => {
   if (!modal?._isShown) {
-    if (e.target.classList.contains("fp__input") && e.key === "Enter" || e.key === " ") {
+    if (e.target.classList.contains("fp__input") && (e.key === "Enter" || e.key === " ")) {
       openPicker(e.target);
       e.preventDefault();
     }
