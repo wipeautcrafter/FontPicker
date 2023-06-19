@@ -7267,10 +7267,8 @@ var loadFont = (_font) => {
     link.type = "text/css";
     document.head.appendChild(link);
     promise = new Promise((resolve) => {
-      link.addEventListener("load", () => {
-        const shorthand = `1em "${name}"`;
-        document.fonts.load(shorthand).then(resolve);
-      });
+      const shorthand = `1em "${name}"`;
+      document.fonts.load(shorthand).then(resolve);
     });
   } else {
     const fontUrl = `${options.localFontsUrl}${font}.${options.localFontsType}`;

@@ -35,7 +35,7 @@ const fontPicker = FontPicker.attach(input);
 // add event listener
 fontPicker.addEventListener("input", (e) => {
     const font = e.target.getFont();
-    drawToCanvas("Hello World!", 100, font);
+    drawToCanvas(font.family, 100, font);
 });
 
 window.picker = fontPicker;
