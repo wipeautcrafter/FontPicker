@@ -25,6 +25,13 @@ FontPicker.initialize({
 });
 ```
 
+### Preloading
+For optimal font loading, add the following preconnect links:
+```html
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+```
+
 ### Creation
 Then, font picker inputs can be created. This can be done by attaching to an existing input element, or creating a new one:
 ```js
