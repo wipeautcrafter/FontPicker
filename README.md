@@ -1,3 +1,8 @@
+## 🚨 New Version! 🆕
+This repository has been superseded in favour of a newer version.
+
+**Please use [wipeautcrafter/fontpicker-v2](https://github.com/wipeautcrafter/fontpicker-v2) instead!**
+
 # Bootstrap 5 Google Fonts Picker
 A Google fonts picker input element, powered by Bootstrap. The picker uses 99.9% Bootstrap, and thus, should work with almost all Bootstrap themes.
 
